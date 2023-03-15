@@ -73,8 +73,15 @@ pub fn setup_stack(load_info: &LoadInfo, load_address: usize, interp_base: usize
 
     let stack_size = 1024 * 256;
     let stack_end = unsafe {
-        mmap(0 as *mut c_void, stack_size, stack_prot, stack_flags, -1, 0)
-            .expect("Failed to allocate stack!")
+        mmap(
+            None,
+            NonZeroUsize::new(stack_size).expect("stack_size is illegal"),
+            stack_prot,
+            stack_flags,
+            -1,
+            0,
+        )
+        .expect("Failed to allocate stack!")
     };
 
     // the stack grows downward, so setup a stack pointer to the beginnings
